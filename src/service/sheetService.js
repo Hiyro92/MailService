@@ -28,6 +28,12 @@ const addRowToSheet = async (data) => {
     },
   });
 
+  if (response.status !== 200) {
+    throw {
+      name: "SheetError",
+      message: `Wrong statuscode from sheets response! Statuscode ${response.status}`,
+    };
+  }
   return response;
 };
 

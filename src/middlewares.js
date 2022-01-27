@@ -19,6 +19,7 @@ function tokenHandler(req, res, next) {
   if (req.body.token !== process.env.TOKEN) {
     res.sendStatus(401);
   }
+  delete req.body.token;
   next();
 }
 

@@ -5,12 +5,12 @@ const sendMail = require("../service/mailService");
 const { addRowToSheet } = require("../service/sheetService");
 
 const schema = Joi.object({
-  firstname: Joi.string().alphanum().min(3).max(40).required(),
-  lastname: Joi.string().alphanum().min(3).max(40).required(),
+  firstname: Joi.string().min(3).max(40).required(),
+  lastname: Joi.string().min(3).max(40).required(),
   email: Joi.string().email().required(),
   phonenummer: Joi.string().alphanum().required(),
   order: Joi.array()
-    .min(1)
+    .min(2)
     .required()
     .items(
       Joi.object({
@@ -28,14 +28,19 @@ const mail = {
 
 router.post("/", async (req, res, next) => {
   try {
-    const { firstname, lastname, email, phonenummer } =
+    const { firstname, lastname, email, phonenummer, order } =
       await schema.validateAsync(req.body);
 
-    mail.to = email;
-    mail.subject = `${firstname} ${lastname}`;
-    const info = await sendMail(mail);
-    res.send(info);
-    console.log("Message sent: %s", info);
+    const sheetRes = await addRowToSheet([
+      lastname,
+      firstname,
+      email,
+      phonenummer,
+      order[0].itemAmount,
+      order[1].itemAmount,
+    ]);
+
+    if (!sheetRes.status === 201) throw Error("something went wrong!");
   } catch (err) {
     next(err);
   }
