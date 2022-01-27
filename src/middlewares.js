@@ -11,11 +11,19 @@ function errorHandler(err, req, res, next) {
   res.status(statusCode);
   res.json({
     message: err.message,
-    stack: process.env.NODE_ENV === 'production' ? '🥞' : err.stack
+    stack: process.env.NODE_ENV === "production" ? "🥞" : err.stack,
   });
+}
+
+function tokenHandler(req, res, next) {
+  if (req.body.token !== process.env.TOKEN) {
+    res.sendStatus(401);
+  }
+  next();
 }
 
 module.exports = {
   notFound,
-  errorHandler
+  errorHandler,
+  tokenHandler,
 };

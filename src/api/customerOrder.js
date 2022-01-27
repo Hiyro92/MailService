@@ -9,6 +9,15 @@ const schema = Joi.object({
   lastname: Joi.string().alphanum().min(3).max(40).required(),
   email: Joi.string().email().required(),
   phonenummer: Joi.string().alphanum().required(),
+  order: Joi.array()
+    .min(1)
+    .required()
+    .items(
+      Joi.object({
+        itemName: Joi.string().alphanum().min(3).max(40).required(),
+        itemAmount: Joi.number().min(1).max(50).required(),
+      })
+    ),
 });
 
 const mail = {
@@ -34,9 +43,8 @@ router.post("/", async (req, res, next) => {
 
 router.post("/test", async (req, res, next) => {
   try {
-    console.log(req.body);
     const resonse = await addRowToSheet(req.body);
-    console.log(resonse);
+    console.log("ok");
     res.send(resonse);
   } catch (err) {
     console.error(err);
