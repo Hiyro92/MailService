@@ -16,6 +16,7 @@ const schema = Joi.object({
 });
 
 router.post("/", async (req, res, next) => {
+  console.log(req.body);
   try {
     const data = await schema.validateAsync(req.body);
     const [sheetRes, mailRes] = await Promise.all([
