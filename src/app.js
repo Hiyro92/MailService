@@ -14,7 +14,6 @@ app.use(morgan("dev"));
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
-app.use(middlewares.tokenHandler);
 
 app.get("/", (req, res) => {
   res.json({
@@ -22,7 +21,7 @@ app.get("/", (req, res) => {
   });
 });
 
-app.use("/api/v1", api);
+app.use("/api/v1", middlewares.tokenHandler, api);
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);

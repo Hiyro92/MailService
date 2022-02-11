@@ -1,7 +1,11 @@
 function notFound(req, res, next) {
-  res.status(404);
-  const error = new Error(`🔍 - Not Found - ${req.originalUrl}`);
-  next(error);
+  try {
+    const token = req.header("token");
+    if (token !== process.env.TOKEN) throw "Access denied";
+    next();
+  } catch (error) {
+    res.status(401).send(error.message);
+  }
 }
 
 function errorHandler(err, req, res, next) {

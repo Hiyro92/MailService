@@ -10,7 +10,7 @@ const loadTemplateFile = () => {
 let htmlMail = loadTemplateFile();
 
 const createMailContent = (data) => {
-  if (process.env.NODE_ENV === "development") htmlMail = loadTemplateFile();
+  //if (process.env.NODE_ENV === "development") htmlMail = loadTemplateFile();
 
   const mailContent = {
     from: process.env.MAIL_FROM,
