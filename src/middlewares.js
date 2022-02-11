@@ -1,11 +1,7 @@
 function notFound(req, res, next) {
-  try {
-    const token = req.header("token");
-    if (token !== process.env.TOKEN) throw "Access denied";
-    next();
-  } catch (error) {
-    res.status(401).send(error.message);
-  }
+  res.status(404);
+  const error = new Error("🔍 - Not Found - " + req.originalUrl);
+  next(error);
 }
 
 function errorHandler(err, req, res, next) {
@@ -19,12 +15,13 @@ function errorHandler(err, req, res, next) {
 }
 
 function tokenHandler(req, res, next) {
-  if (req.body.token !== process.env.TOKEN) {
-    console.error("Bad Token!");
-    res.sendStatus(401);
+  try {
+    const token = req.header("token");
+    if (token !== process.env.TOKEN) throw "Access denied";
+    next();
+  } catch (error) {
+    res.status(401).send(error.message);
   }
-  delete req.body.token;
-  next();
 }
 
 module.exports = {
