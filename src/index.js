@@ -13,7 +13,7 @@ http
   .listen(http_port, () =>
     console.log(`HTTP-Server listening on Port: ${http_port}`)
   );
-/* https
+https
   .createServer(
     {
       key: fs.readFileSync(path.join(__dirname, "/keys/server.key")),
@@ -24,4 +24,3 @@ http
   .listen(https_port, () =>
     console.log(`HTTPS-Server listening on Port: ${https_port}`)
   );
- */
