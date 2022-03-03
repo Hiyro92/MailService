@@ -17,7 +17,12 @@ function errorHandler(err, req, res, next) {
 function tokenHandler(req, res, next) {
   try {
     const token = req.header("token");
-    if (token !== process.env.TOKEN) throw "Access denied";
+    if (token !== process.env.TOKEN) {
+      console.error(
+        `Incorrect token: set-> ${process.env.TOKEN} ≠ req-> ${token}`
+      );
+      throw "Access denied";
+    }
     next();
   } catch (error) {
     res.status(401).send(error.message);
