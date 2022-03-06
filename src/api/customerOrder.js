@@ -8,7 +8,7 @@ const createMailContent = require("../template/ostern/mailTemplate");
 const schema = Joi.object({
   lastname: Joi.string().min(3).max(40).required(),
   firstname: Joi.string().min(3).max(40).required(),
-  email: Joi.string().min(3).max(50).required(),
+  email: Joi.string().email().min(3).max(50).required(),
   phonenumber: Joi.string().alphanum().required(),
   trout: Joi.number().integer().min(0).max(50).required(),
   salmon: Joi.number().integer().min(0).max(50).required(),
