@@ -25,7 +25,7 @@ const morganJSONFormat = () =>
   });
 
 app.use(
-  morgan(morganJSONFormat, {
+  morgan(morganJSONFormat(), {
     skip: function (req, res) {
       return req.url === "/api/v1/online";
     },
