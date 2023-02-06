@@ -10,6 +10,21 @@ const api = require("./api");
 
 const app = express();
 
+const morganFormat = (tokens, req, res) => {
+  return [
+    tokens.timestamp(),
+    "-",
+    req.headers["X-Real-IP"],
+    tokens.method(req, res),
+    tokens.url(req, res),
+    tokens.status(req, res),
+    tokens.res(req, res, "content-length"),
+    "-",
+    tokens["response-time"](req, res),
+    "ms",
+  ].join(" ");
+};
+
 const morganJSONFormat = () =>
   JSON.stringify({
     method: ":method",
