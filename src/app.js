@@ -12,7 +12,6 @@ const app = express();
 
 const morganFormat = (tokens, req, res) => {
   return [
-    tokens.timestamp(req, res),
     "-",
     req.headers["X-Real-IP"],
     tokens.method(req, res),
