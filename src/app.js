@@ -10,7 +10,11 @@ const api = require("./api");
 
 const app = express();
 
-app.use(morgan("dev"));
+morgan("combined", {
+  skip: function (req, res) {
+    return req.url === "/api/v1/online";
+  },
+});
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
