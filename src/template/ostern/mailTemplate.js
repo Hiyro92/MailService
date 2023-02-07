@@ -30,7 +30,10 @@ const createMailContent = (data) => {
     .replace(/\$\[lastname\]/g, `${data.lastname}`)
     .replace(/\$\[trout\]/g, `${data.trout}`)
     .replace(/\$\[salmon\]/g, `${data.salmon}`)
+    .replace(/\$\[pichupdate\]/g, `${process.env.PICK_UP_DATE}`)
+    .replace(/\$\[pichuptime\]/g, `${process.env.PICK_UP_TIME}`)
     .replace("./../static/Logo.png", `cid:logo`);
+
   return mailContent;
 };
 

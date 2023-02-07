@@ -4,6 +4,8 @@ const Joi = require("joi");
 const sendMail = require("../service/mailService");
 const { addRowToSheet } = require("../service/sheetService");
 const createMailContent = require("../template/ostern/mailTemplate");
+const moment = require("moment");
+const UAParser = require("ua-parser-js");
 
 const schema = Joi.object({
   lastname: Joi.string().min(3).max(40).required(),
@@ -17,8 +19,12 @@ const schema = Joi.object({
 
 router.post("/", async (req, res, next) => {
   console.log(req.body);
+  let parser = new UAParser(req.headers["user-agent"]);
   try {
     const data = await schema.validateAsync(req.body);
+    data.member = "Online";
+    data.device = parser.getDevice().type ? parser.getDevice().type : "desktop";
+    data.os = parser.getOS().name;
     const [sheetRes, mailRes] = await Promise.all([
       addRowToSheet(createSheetArray(data)),
       sendMail(createMailContent(data)),
@@ -30,7 +36,9 @@ router.post("/", async (req, res, next) => {
 });
 
 const createSheetArray = (data) => {
+  moment.locale("de");
   return [
+    moment().format("LLLL"),
     data.lastname,
     data.firstname,
     data.email,
@@ -39,6 +47,8 @@ const createSheetArray = (data) => {
     data.trout,
     data.salmon,
     data.comment,
+    data.device,
+    data.os,
   ];
 };
 

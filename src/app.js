@@ -10,44 +10,38 @@ const api = require("./api");
 
 const app = express();
 
-const morganFormat = (tokens, req, res) => {
-  return [
-    "-",
-    req.headers["X-Real-IP"],
-    tokens.method(req, res),
-    tokens.url(req, res),
-    tokens.status(req, res),
-    tokens.res(req, res, "content-length"),
-    "-",
-    tokens["response-time"](req, res),
-    "ms",
-  ].join(" ");
-};
-
-const morganJSONFormat = () =>
-  JSON.stringify({
-    method: ":method",
-    url: ":url",
-    http_version: ":http-version",
-    remote_addr: ":remote-addr",
-    remote_addr_forwarded: ":req[x-forwarded-for]", //Get a specific header
-    response_time: ":response-time",
-    status: ":status",
-    content_length: ":res[content-length]",
-    timestamp: ":date[iso]",
-    user_agent: ":user-agent",
-  });
+const morganFormat =
+  process.env.NODE_ENV === "production"
+    ? (tokens, req, res) => {
+        const format = [
+          `[${tokens.date(req, res, "iso")}]`,
+          `${req.headers["x-real-ip"]}`,
+          `${tokens.method(req, res)}`,
+          `"${tokens.url(req, res)}"`,
+          `${tokens.status(req, res)} -`,
+          `${tokens.res(req, res, "content-length")} byte`,
+          `${tokens["response-time"](req, res)} ms`,
+        ].join(" ");
+        return format;
+      }
+    : "tiny";
 
 app.use(
-  morgan(morganFormat(), {
+  morgan(morganFormat, {
     skip: function (req, res) {
-      return req.url === "/api/v1/online";
+      return req.originalUrl === "/api/v1/online";
     },
   })
 );
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
+
+app.get("/api/v1/online", (req, res) => {
+  res.json({
+    message: "👍ok👍",
+  });
+});
 
 app.get("/", (req, res) => {
   res.json({
